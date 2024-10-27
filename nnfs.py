@@ -116,14 +116,14 @@ class NeuralNet:
         return predictions
 
 if __name__ == "__main__":
-    # Test 
+    # test 
     x = np.array([
         [0.01510066, 0.87729392, 0.73927447],
         [0.18380298, 0.16352703, 0.23512937]])
     
     y = np.array([0.98388509, 0.76754082])
 
-    # Network configuration
+    # network configuration
     activations = ['relu', 'relu', 'sigmoid']
     hidden_layers = [4, 4] 
     
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     # training
     errors = nn.fit(epochs=100)
     
-    # Make predictions
+    # predictions
     predictions = nn.predict(x)
     for pred, actual in zip(predictions.flatten(), y.flatten()):
         print(f"Predicted: {pred:.8f}, Actual: {actual:.8f}")
