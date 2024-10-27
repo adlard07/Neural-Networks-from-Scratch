@@ -137,7 +137,7 @@ if __name__ == "__main__":
         learning_rate=0.01
     )
     
-    # Train the network
+    # training
     errors = nn.fit(epochs=100)
     
     # Make predictions
