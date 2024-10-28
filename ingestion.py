@@ -49,7 +49,7 @@ class MnistDataloader(object):
         return (x_train, y_train),(x_test, y_test)
     
 def read_data():
-    logging.info('Data ingestion started:')
+    logging.info('Data ingestion started ->')
     #
     # Verify Reading Dataset via MnistDataloader class
     # Set file paths based on added MNIST Datasets
@@ -66,5 +66,5 @@ def read_data():
     mnist_dataloader = MnistDataloader(training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath)
     (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
     
-    logging.info('Data ingestion complete!')
+    logging.info('Data ingestion complete!->')
     return (x_train, y_train), (x_test, y_test)

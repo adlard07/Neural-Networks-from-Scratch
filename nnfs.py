@@ -44,8 +44,6 @@ class NeuralNet:
             self.weights.append(np.random.randn(self.layer_sizes[i], self.layer_sizes[i + 1]) * np.sqrt(2.0 / self.layer_sizes[i]))
             self.biases.append(np.zeros((1, self.layer_sizes[i + 1])))
             
-        logging.info("Weights and biases initialized!")
-
     def activation_func(self, inputs, activation_func):
         if activation_func == 'sigmoid':
             return 1 / (1 + np.exp(-inputs))
@@ -132,8 +130,7 @@ class NeuralNet:
         for i in range(1, epochs + 1):
             loss = self.backpropagation()
             losses.append(loss)
-            if i % 10 == 0:
-                logging.info(f"Epoch {i}/{epochs} - Loss: {loss:.8f}")
+            logging.info(f"Epoch {i}/{epochs} - Loss: {loss:.8f}")
         return losses
 
     def predict(self, X):
