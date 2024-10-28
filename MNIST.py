@@ -14,8 +14,8 @@ y_train_one_hot[np.arange(len(y_train)), y_train] = 1
 y_test_one_hot = np.zeros((len(y_test), num_classes))
 y_test_one_hot[np.arange(len(y_test)), y_test] = 1
 
-hidden_layers = [64, 128, 256, 128, 64]  # 5 hidden layers
-activations = ['relu', 'relu', 'relu', 'relu', 'relu', 'softmax']
+hidden_layers = [64, 128, 128, 64]
+activations = ['relu', 'relu', 'relu', 'relu', 'softmax']
 
 nn = NeuralNet(
     x=x_train, 

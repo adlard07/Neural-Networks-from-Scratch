@@ -50,8 +50,7 @@ class NeuralNet:
         if activation_func == 'sigmoid':
             return 1 / (1 + np.exp(-inputs))
         if activation_func == 'softmax':
-            exp_values = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
-            return exp_values / np.sum(exp_values, axis=1, keepdims=True)
+            return self.softmax(inputs)
         if activation_func == 'tanh':
             return np.tanh(inputs)
         if activation_func == 'relu':
@@ -70,6 +69,11 @@ class NeuralNet:
             return np.where(inputs > 0, 1, 0)
         if func == 'leaky_relu':
             return np.where(inputs > 0, 1, 0.01)
+
+    def softmax(self, inputs):
+        inputs = np.clip(inputs, -500, 500)  # Clip inputs to prevent overflow
+        exp_values = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
+        return exp_values / np.sum(exp_values, axis=1, keepdims=True)
 
     def neuron_activation(self, inputs, weights, bias, activation_func):
         return self.activation_func(np.dot(inputs, weights) + bias, activation_func=activation_func)
@@ -95,21 +99,31 @@ class NeuralNet:
         return current_input
 
     def backpropagation(self):
+        # Forward pass
         self.y_pred = self.feedforward()
+        
+        # Calculate loss
         loss = self.cross_entropy_loss(self.y, self.y_pred)
-        
         batch_size = self.y.shape[0]
-        self.delta = (self.y_pred - self.y) / batch_size
-        
-        self.deltas = [self.delta]
+        deltas = [(self.y_pred - self.y) / batch_size]
+
+        # Backpropagate through layers
         for i in reversed(range(len(self.weights) - 1)):
-            self.delta = np.dot(self.deltas[0], self.weights[i + 1].T) * self.activation_derivative(
+            delta = np.dot(deltas[0], self.weights[i + 1].T) * self.activation_derivative(
                 self.layer_outputs[i + 1], self.activations[i])
-            self.deltas.insert(0, self.delta)
+            deltas.insert(0, delta)
         
+        # Update weights and biases
         for i in range(len(self.weights)):
-            self.weights[i] += -self.learning_rate * np.dot(self.layer_outputs[i].T, self.deltas[i])
-            self.biases[i] += -self.learning_rate * np.sum(self.deltas[i], axis=0, keepdims=True)
+            d_weight = np.dot(self.layer_outputs[i].T, deltas[i])
+            d_bias = np.sum(deltas[i], axis=0, keepdims=True)
+
+            # Clip gradients to prevent exploding gradients
+            d_weight = np.clip(d_weight, -1.0, 1.0)
+            d_bias = np.clip(d_bias, -1.0, 1.0)
+
+            self.weights[i] -= self.learning_rate * d_weight
+            self.biases[i] -= self.learning_rate * d_bias
             
         return loss
 
@@ -131,7 +145,6 @@ class NeuralNet:
         predictions = self.feedforward()
         self.x = original_x
         return predictions
-
 
 if __name__ == "__main__":
     # Training data
